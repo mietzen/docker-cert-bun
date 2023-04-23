@@ -4,7 +4,7 @@ Slightly modernized and dockerized version of: https://github.com/porkbundomains
 
 # Usage (e.g. with nginx):
 
-```
+```yaml
 version: "3"
 services:
   certbun:

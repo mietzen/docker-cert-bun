@@ -1,10 +1,3 @@
-# Docker Certbun
-
-Slightly modernized and dockerized version of: https://github.com/porkbundomains/certbun
-
-# Usage (e.g. with nginx):
-
-```
 version: "3"
 services:
   certbun:
@@ -14,7 +7,7 @@ services:
       DOMAIN: "domain.com" # Your Porkbun domain
       SECRETAPIKEY: "<YOUR-SECRETAPIKEY>" # Your Porkbun Secret-API-Key
       APIKEY: "<YOUR-APIKEY>" # Your Porkbun API-Key
-      SLEEP: 24 # In Hours 
+      SLEEP: 240 # In Hours 
     volumes:
       - ssl:/etc/ssl
     restart: unless-stopped
@@ -43,5 +36,3 @@ volumes:
 networks:
   nginx:
     external: true
-
-```

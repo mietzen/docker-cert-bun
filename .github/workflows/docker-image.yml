@@ -5,7 +5,6 @@ on:
   push:
     branches: ['main']
 
-
 jobs:
   Setup:
     runs-on: ubuntu-latest
@@ -53,14 +52,14 @@ jobs:
         ARCH=$(echo "${PLATFORM}" | awk -F  "/" '{print $2$3}')
         echo ""
         echo "============================================================="
-        echo "Building: ${DOCKER_USER}/porkbun-ddns:${VERSION}-${ARCH}-${BUILD_NR}"
+        echo "Building: ${DOCKER_USER}/porkbun-certbun:${ARCH}-${BUILD_NR}"
         echo "============================================================="
         echo ""
         docker buildx build \
-          --tag "${DOCKER_USER}/porkbun-ddns:${ARCH}-${BUILD_NR}" \
+          --tag "${DOCKER_USER}/porkbun-certbun:${ARCH}-${BUILD_NR}" \
           --platform ${PLATFORM} \
           --load \
-          -f ./Docker/Dockerfile .
+          -f Dockerfile .
 
     - name: Push Images
       if: github.event_name == 'push' && github.ref_name == 'main'
@@ -72,12 +71,12 @@ jobs:
         ARCH=$(echo "${PLATFORM}" | awk -F  "/" '{print $2$3}')
         echo ""
         echo "============================================================="
-        echo "Pushing: ${DOCKER_USER}/porkbun-ddns:${VERSION}-${ARCH}-${BUILD_NR}"
+        echo "Pushing: ${DOCKER_USER}/porkbun-certbun:${ARCH}-${BUILD_NR}"
         echo "============================================================="
         echo ""
-        docker tag "${DOCKER_USER}/porkbun-ddns:${ARCH}-${BUILD_NR}" "${DOCKER_USER}/porkbun-ddns:${ARCH}"
-        docker push "${DOCKER_USER}/porkbun-ddns:${ARCH}-${BUILD_NR}"
-        docker push "${DOCKER_USER}/porkbun-ddns:${ARCH}"
+        docker tag "${DOCKER_USER}/porkbun-certbun:${ARCH}-${BUILD_NR}" "${DOCKER_USER}/porkbun-certbun:${ARCH}"
+        docker push "${DOCKER_USER}/porkbun-certbun:${ARCH}-${BUILD_NR}"
+        docker push "${DOCKER_USER}/porkbun-certbun:${ARCH}"
 
   Shared-Manifest:
     if: github.event_name == 'push' && github.ref_name == 'main'
@@ -101,17 +100,17 @@ jobs:
       run: |
         echo ""
         echo "============================================================="
-        echo "Pushing shared manifest: ${DOCKER_USER}/porkbun-ddns:${VERSION}"
+        echo "Pushing shared manifest: ${DOCKER_USER}/porkbun-certbun:latest"
         echo "============================================================="
         echo ""
         echo "#!/bin/bash" > push-shared-tags.sh
-        echo -n "docker manifest create ${DOCKER_USER}/porkbun-ddns:${VERSION}" >> push-shared-tags.sh
+        echo -n "docker manifest create ${DOCKER_USER}/porkbun-certbun:latest" >> push-shared-tags.sh
         while read -r PLATFORM; do
           ARCH=$(echo "${PLATFORM}" | awk -F  "/" '{print $2$3}')
-          echo -n " ${DOCKER_USER}/porkbun-ddns:${ARCH}-${BUILD_NR}" >> push-shared-tags.sh
+          echo -n " ${DOCKER_USER}/porkbun-certbun:${ARCH}-${BUILD_NR}" >> push-shared-tags.sh
         done <<< "$(cat .github/platforms.json | jq -r '.platforms | join("\n")')"
         echo "" >> push-shared-tags.sh
-        echo "docker manifest push ${DOCKER_USER}/porkbun-ddns:latest" >> push-shared-tags.sh
+        echo "docker manifest push ${DOCKER_USER}/porkbun-certbun:latest" >> push-shared-tags.sh
         cat push-shared-tags.sh
         chmod +x ./push-shared-tags.sh
         ./push-shared-tags.sh
